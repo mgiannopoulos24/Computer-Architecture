@@ -2,31 +2,30 @@
 # Text Segment #
 ################
 
-	.text
-	.globl __start
+    .text
+    .globl __start
 __start:
 
-	lw $s1,words
-	lw $s0, words1
-	
-	addu $s5, $s1, $s0
-	not $s2, $s5
-	
-	and $s3,$s1,$s2
-	and $s4,$s0, $s2
-	and $s6, $s1, $s0
-	
-	or $s0, $s3, $s4
-	or $s0, $s0, $s6
-	
-	li $v0,0xA
-	syscall
-	
+    lw $t0, number1     # Load the first number from memory
+    lw $t1, number2     # Load the second number from memory
+
+    addu $t2, $t0, $t1  # Perform the addition
+    
+    li $t3, 0x80000000  # Set $t3 with the 33rd bit (MSB)
+    and $t4, $t2, $t3   # Extract the 33rd bit of the sum
+    
+    srl $t4, $t4, 31    # Move the 33rd bit to the LSB position
+    sw $t4, result      # Store the 33rd bit result into memory
+    
+    # Exit the program
+    li $v0, 10          # syscall code for exit
+    syscall
 
 ################
 # Data Segment #
 ################
 
-	.data
-words: .word 0x00
-words1: .word 0x01
+    .data
+number1: .word 0x7FFFFFFF  # First number (positive)
+number2: .word 0x00000001  # Second number (positive)
+result:  .word 0           # Result bit (initialize to 0)

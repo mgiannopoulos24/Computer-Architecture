@@ -33,4 +33,11 @@ __start:
 		
 	.align 0
 
-	
+################
+# Text Segment #
+################
+
+## part (c)
+	ulh $t3, 3($s1)    # Load half word from unaligned address 0x1001000B
+	ulw $t4, 3($s1)    # Load word from unaligned address 0x10010008
+

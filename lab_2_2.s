@@ -1,44 +1,21 @@
-################
-# Text Segment #
-################
+.data
+input_word: .word 0x12345678      # Είσοδος σε big-endian μορφή
+output_word: .word 0               # Κενός καταχωρητής για την έξοδο σε little-endian μορφή
 
+.text
+.globl main
 
+main:
+    lw $t0, input_word           # Φορτώνουμε την είσοδο στον καταχωρητή $t0
+    srl $t1, $t0, 24             # Μετακινούμε τα πρώτα 8 bits του $t0 στα τελευταία 8 bits του $t1
+    sll $t2, $t0, 24             # Μετακινούμε τα τελευταία 8 bits του $t0 στα πρώτα 8 bits του $t2
+    srl $t3, $t0, 8              # Μετακινούμε τα δεύτερα 8 bits του $t0 στα τελευταία 8 bits του $t3
+    sll $t4, $t0, 8              # Μετακινούμε τα τελευταία 8 bits του $t0 στα δεύτερα 8 bits του $t4
+    or $t5, $t1, $t2             # Συνενώνουμε τα bits των $t1 και $t2
+    or $t6, $t3, $t4             # Συνενώνουμε τα bits των $t3 και $t4
+    or $t7, $t5, $t6             # Συνενώνουμε τα bits των $t5 και $t6
+    sw $t7, output_word          # Αποθηκεύουμε την έξοδο στον καταχωρητή output_word
 
-	.text
-	.globl __start
-__start:
-
-
-	li $t0, 0x12345678 ##load big endian word
-
-	sll $t1,$t0,8
-	li $t2, 0x00FF00FF
-	and $t3,$t1,$t2
-	srl $t1,$t0,8
-	not $t2,$t2
-	and $t1,$t1,$t2
-	or $t3,$t3,$t1
-	
-	li $v0,10
-	syscall   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###############
-# Data Segment #
-###############
-
-	.data
+    # Τέλος προγράμματος
+    li $v0, 10                   # Κωδικός εξόδου για τη λήξη προγράμματος
+    syscall
