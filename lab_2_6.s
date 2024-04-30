@@ -1,26 +1,34 @@
-################
-# Text Segment #
-################
-
-	.text
-	.globl __start
+    .text
+    .globl __start
 __start:
 
-	lw $s0, w1 #high A
-	lw $s1, w2 #high B
-	lw $s2, w3 #low A
-	lw $s3, w4 #low B
+    # Load the first number from memory
+    lw $t0, number1     # Load the first number from memory
+    lw $t1, number1 + 4 # Load the next 4 bytes of the first number
 
+    # Load the second number from memory
+    lw $t2, number2     # Load the second number from memory
+    lw $t3, number2 + 4 # Load the next 4 bytes of the second number
 
-	addu $s4, $s0,$s2
+    # Perform addition of the lower 32 bits
+    addu $t4, $t0, $t2
 
-	srl $s0,$s0,31
-	srl $s2,$s2,31
+    # Check for overflow in lower 32 bits
+    sltu $t5, $t4, $t0   # Check if addition resulted in a carry
+    addu $t1, $t1, $t3   # Add the higher 32 bits
+    addu $t1, $t1, $t5   # Add the carry if present
+    
+    # Store the result in memory
+    sw $t4, result       # Store the lower 32 bits of the result
+    sw $t1, result + 4   # Store the higher 32 bits of the result
+    
+    # Exit the program
+    li $v0, 10          # syscall code for exit
+    syscall
 
-
-################
-# Data Segment #
-################
-
-
-.data
+    .data
+number1: .word 0x00000001  # First number (little-endian, lower 32 bits)
+         .word 0x7FFFFFFF  # First number (little-endian, higher 32 bits)
+number2: .word 0xFFFFFFFF  # Second number (little-endian, lower 32 bits)
+         .word 0xFFFFFFFF  # Second number (little-endian, higher 32 bits)
+result:  .word 0           # Result (initialize to 0)

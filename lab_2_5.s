@@ -3,8 +3,8 @@
 ################
 
     .text
-    .globl __start
-__start:
+    .globl main
+main:
 
     lw $t0, number1     # Load the first number from memory
     lw $t1, number2     # Load the second number from memory

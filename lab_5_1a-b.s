@@ -1,32 +1,30 @@
-###Text segment###
+    .data
+input_prompt:   .asciiz "Enter a floating point number: "
+output_format:  .asciiz "You entered: %.2f\n"
 
+    .text
+    .globl main
 
-	.text
-	.globl __start
-__start:
+main:
+    # Print input prompt
+    li $v0, 4                   # Load system call code for printing string
+    la $a0, input_prompt        # Load address of input prompt string
+    syscall                     # Print input prompt
 
-	lwcl	$f4, zerofloat
+    # Read float from console
+    li $v0, 6                   # Load system call code for reading float
+    syscall                     # Read float
+    mov.s $f12, $f0             # Move float from $f0 to $f12 for printing
 
+    # Print float
+    li $v0, 2                   # Load system call code for printing float
+    syscall                     # Print float
 
-	show_message: 	li $v0,4
-									la $a0,printmsg
-									syscall
+    # (c) Directly load numbers into registers
+    # Commenting out this section for simulating direct loading of numbers into registers
+    # Remove the comment to try this section
+    # li $f0, 0x00000001        # +min: Smallest positive denormalized number
 
-	read_int: li $v0, 6
-					syscall
-
-
-	print_int: 	li $v0, 2
-						add.s $f12,$f0,$f4
-						syscall
-
-	exit:
-				li $v0,10
-				syscall
-
-###Data segment###
-
-	.data
-	printmsg: .asciiz "enter your number: "
-	zerofloat: .float 0.0
-	exitmsg: .asciiz "your number is: "
+    # Exit program
+    li $v0, 10                  # Load system call code for exit
+    syscall                     # Exit program

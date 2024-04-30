@@ -1,10 +1,11 @@
 #############################
-#          Text Segment     #
+#       Text Segment        #
 #############################
 
 .text
-.globl __start
-__start:
+.globl main
+
+main:
 
 ### Part (b)
 # Load data from Addr11

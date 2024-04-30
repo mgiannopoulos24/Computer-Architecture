@@ -1,50 +1,49 @@
-##text_segment##
+.text
+.globl main
 
-	.text
-		.globl __start
-	__start:
+main:
+    # start of main program
+    la $a0, prompt
+    li $v0, 4
+    syscall              # display "Enter integer number :"
 
+    li $v0, 5
+    syscall              # read integer
+    move $a0, $v0       # Pass the integer as an argument to the recursive procedure
 
-# start of main program
- la $a0,prompt
- li $v0,4
- syscall # display "Enter integer number :"
- li $v0,5
- syscall # read integer
- move $t0,$v0
- la $a0,endl
- li $v0,4
- syscall # display end of line
- move $a0,$t0 
- li $v0,10
- syscall # exit
+    jal recursive      # Call the recursive procedure
+
+    # Continue with displaying the end of line and exiting
+    la $a0, endl
+    li $v0, 4
+    syscall              # display end of line
+
+    li $v0, 10
+    syscall              # exit
+
 # end of main program
+
 # start of procedure
-procedure_check:
+recursive:
+    # Check if the integer is zero
+    beq $a0, $zero, end_recursive   # If the integer is zero, return
 
-		check_if_zero:
-		move $t1,$t0
-		slt $t2,$t1,$s0
-		jr $ra
+    # Print the value of the integer
+    move $a0, $a0
+    li $v0, 1
+    syscall
 
-		otherwise:
+    # Decrement the integer by one
+    sub $a0, $a0, 1
 
-		addi $t1, $t1,-1
-		move $a0,$t1
-		jal procedure_check
+    # Recursive call to the procedure
+    jal recursive
 
-		return_res:
-			li $v0,1
-			syscall
-		
-
+end_recursive:
+    jr $ra   # Return to the caller
 
 # end of procedure
- .data
+
+.data
 prompt: .asciiz "Enter integer number :"
 endl: .asciiz "\n"
-#################################################
-# #
-# End of program #
-# #
-#################################################

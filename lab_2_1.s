@@ -1,27 +1,27 @@
 .data
-    input:  .word 0x12345678     # Ο αρχικός δυαδικός αριθμός εδώ
+    input:  .word 0x12345678     # The initial binary number here
 
 .text
-    # Εκτελούμε το κυρίως τμήμα του προγράμματος
+    # Execute the main part of the program
     main:
-        lw $t0, input           # Φορτώνουμε τον αριθμό από τη μνήμη
-        jal binary_to_gray      # Καλούμε τη συνάρτηση για μετατροπή σε Gray
-        li $v0, 10              # Κωδικός εξόδου για την τερματική συνάρτηση
-        syscall                 # Τερματισμός προγράμματος
+        lw $t0, input           # Load the number from memory
+        jal binary_to_gray      # Call the function to convert to Gray code
+        li $v0, 10              # Exit code for the syscall
+        syscall                 # Terminate the program
 
-    # Συνάρτηση για μετατροπή δυαδικού αριθμού σε κωδικοποίηση Gray
+    # Function to convert a binary number to Gray code
     binary_to_gray:
-        li $t1, 0               # Αρχικοποίηση ενός καταχωρητή για τον Gray αριθμό
-        li $t2, 1               # Αρχικοποίηση ενός καταχωρητή για μάσκα αλλαγής
-        li $t3, 32              # Αρχικοποίηση ενός καταχωρητή για τον αριθμό των bits
+        li $t1, 0               # Initialize a register for the Gray code number
+        li $t2, 1               # Initialize a register for the change mask
+        li $t3, 32              # Initialize a register for the number of bits
 
     loop:
-        and $t4, $t0, $t2      # Λογική πράξη AND για να πάρουμε το τελευταίο bit
-        xor $t1, $t1, $t4      # Λογική πράξη XOR για τον Gray αριθμό
-        srl $t0, $t0, 1        # Δεξιά ολίσθηση του δυαδικού αριθμού
-        srl $t2, $t2, 1        # Δεξιά ολίσθηση της μάσκας
-        addi $t3, $t3, -1      # Μείωση του μετρητή bits
-        bnez $t3, loop         # Επανάληψη μέχρι να έχουμε εξαντλήσει όλα τα bits
+        and $t4, $t0, $t2      # Logical AND operation to get the last bit
+        xor $t1, $t1, $t4      # XOR operation to obtain the Gray code
+        srl $t0, $t0, 1        # Right shift the binary number
+        srl $t2, $t2, 1        # Right shift the mask
+        addi $t3, $t3, -1      # Decrease the bit counter
+        bnez $t3, loop         # Repeat until all bits are exhausted
 
-        # Επιστροφή του Gray αριθμού
+        # Return the Gray code
         jr $ra
